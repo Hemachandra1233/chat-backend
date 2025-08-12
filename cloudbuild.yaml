@@ -1,11 +1,11 @@
 steps:
   # 1. Build the container image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'asia-south1-docker.pkg.dev/$PROJECT_ID/chat-backend:$COMMIT_SHA', '.']
+    args: ['build', '-t', 'asia-south1-docker.pkg.dev/$_PROJECT_ID/chat-backend:$COMMIT_SHA', '.']
 
   # 2. Push the container image to Google Container Registry (GCR)
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'asia-south1-docker.pkg.dev/$PROJECT_ID/chat-backend:$COMMIT_SHA']
+    args: ['push', 'asia-south1-docker.pkg.dev/$_PROJECT_ID/chat-backend:$COMMIT_SHA']
 
   # 3. Deploy the container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -15,11 +15,14 @@ steps:
       - 'deploy'
       - 'chat-backend'
       - '--image'
-      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/chat-backend:$COMMIT_SHA'
+      - 'asia-south1-docker.pkg.dev/$_PROJECT_ID/chat-backend:$COMMIT_SHA'
       - '--region'
       - 'europe-west1' # Replace with your desired region
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
 images:
-  - 'asia-south1-docker.pkg.dev/$PROJECT_ID/chat-backend:$COMMIT_SHA'
+  - 'asia-south1-docker.pkg.dev/$_PROJECT_ID/chat-backend:$COMMIT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
