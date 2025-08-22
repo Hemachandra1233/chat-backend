@@ -3,59 +3,57 @@ steps:
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'gcloud'
   args:
-  - 'config'
-  - 'list'
-  # - 'endpoints'
-  # - 'services'
-  # - 'deploy'
-  # - 'openapi.yml'
-  # - '--project'
-  # - '${_PROJECT_ID}'
+  - 'endpoints'
+  - 'services'
+  - 'deploy'
+  - 'openapi.yml'
+  - '--project'
+  - '${_PROJECT_ID}'
   id: 'deploy-endpoints-config'
 
 # Step 2: Build the ESPv2 Container Image and Push to Artifact Registry
-# - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-#   entrypoint: 'bash'
-#   args:
-#     - '-c'
-#     - |
-#       chmod +x ./gcloud_build_image
-#       CONFIG_ID=$$(gcloud endpoints configs list --service=${_SERVICE_NAME} --project=${_PROJECT_ID} --format='value(CONFIG_ID)' | sort -r | head -n 1)
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      chmod +x ./gcloud_build_image
+      CONFIG_ID=$$(gcloud endpoints configs list --service=${_SERVICE_NAME} --project=${_PROJECT_ID} --format='value(CONFIG_ID)' | sort -r | head -n 1)
 
-#       if [ -z "$$CONFIG_ID" ]; then
-#         echo "ERROR: Failed to retrieve a configuration ID."
-#         exit 1
-#       fi
-#       echo "Successfully fetched CONFIG_ID: $$CONFIG_ID"
+      if [ -z "$$CONFIG_ID" ]; then
+        echo "ERROR: Failed to retrieve a configuration ID."
+        exit 1
+      fi
+      echo "Successfully fetched CONFIG_ID: $$CONFIG_ID"
       
-#       # Use the -g flag to specify your Artifact Registry repository
-#       ./gcloud_build_image \
-#         -s ${_SERVICE_NAME} \
-#         -c $$CONFIG_ID \
-#         -p ${_PROJECT_ID} \
-#         -g "${_ARTIFACT_REGISTRY_REPO}"
-#   id: 'build-espv2-image'
+      # Use the -g flag to specify your Artifact Registry repository
+      ./gcloud_build_image \
+        -s ${_SERVICE_NAME} \
+        -c $$CONFIG_ID \
+        -p ${_PROJECT_ID} \
+        -g "${_ARTIFACT_REGISTRY_REPO}"
+  id: 'build-espv2-image'
 
-# # Step 3: Deploy the ESPv2 Container from Artifact Registry to Cloud Run
-# - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-#   entrypoint: 'bash'
-#   args:
-#     - '-c'
-#     - |
-#       CONFIG_ID=$$(gcloud endpoints services describe ${_SERVICE_NAME} --project ${_PROJECT_ID} --format='value(serviceConfig.id)')
-#       ESP_VERSION=$$(gcloud container images list-tags gcr.io/endpoints-runtime-serverless --filter="tags:^2" --format="get(tags)" | sort -r | head -n 1)
+# Step 3: Deploy the ESPv2 Container from Artifact Registry to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      CONFIG_ID=$$(gcloud endpoints services describe ${_SERVICE_NAME} --project ${_PROJECT_ID} --format='value(serviceConfig.id)')
+      ESP_VERSION=$$(gcloud container images list-tags gcr.io/endpoints-runtime-serverless --filter="tags:^2" --format="get(tags)" | sort -r | head -n 1)
       
-#       # Construct the image URL pointing to your Artifact Registry
-#       IMAGE_URL="${_ARTIFACT_REGISTRY_REPO}/espv2-runtime-serverless:$${ESP_VERSION}-${_SERVICE_NAME}-$${CONFIG_ID}"
+      # Construct the image URL pointing to your Artifact Registry
+      IMAGE_URL="${_ARTIFACT_REGISTRY_REPO}/espv2-runtime-serverless:$${ESP_VERSION}-${_SERVICE_NAME}-$${CONFIG_ID}"
       
-#       gcloud run deploy ${_GATEWAY_SERVICE_NAME} \
-#         --image=$$IMAGE_URL \
-#         --allow-unauthenticated \
-#         --platform=managed \
-#         --project=${_PROJECT_ID} \
-#         --region=${_REGION}
-#         --set-env-vars=ESPv2_ARGS=--cors_preset=basic
-#   id: 'deploy-espv2-to-cloud-run'
+      gcloud run deploy ${_GATEWAY_SERVICE_NAME} \
+        --image=$$IMAGE_URL \
+        --allow-unauthenticated \
+        --platform=managed \
+        --project=${_PROJECT_ID} \
+        --region=${_REGION}
+        --set-env-vars=ESPv2_ARGS=--cors_preset=basic
+  id: 'deploy-espv2-to-cloud-run'
 
 options:
   logging: CLOUD_LOGGING_ONLY
