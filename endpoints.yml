@@ -1,6 +1,7 @@
 steps:
 # Step 1: Deploy Endpoints Configuration
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'gcloud'
   args:
   - 'endpoints'
   - 'services'
