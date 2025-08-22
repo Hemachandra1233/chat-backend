@@ -16,10 +16,10 @@ const geminiConfig = {
   maxOutputTokens: 4096,
 };
 
-const geminiModel = googleAI.getGenerativeModel({
-  model: "gemini-2.5-pro",
-  geminiConfig,
-});
+// const geminiModel = googleAI.getGenerativeModel({
+//   model: "gemini-2.5-pro",
+//   geminiConfig,
+// });
 
 app.use(express.json());
 app.use(cors({
@@ -157,6 +157,15 @@ app.get('/results', async (req, res) => {
 
 })
 
+app.get('/hello1', (req, res) => {
+  res.send('Hello 1 Message');
+});
+app.get('/hello2', (req, res) => {
+  res.send('Hello 2 Message');
+});
+app.get('/hema', (req, res) => {
+  res.send('Hello Hemachandra');
+});
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });

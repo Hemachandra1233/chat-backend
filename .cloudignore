@@ -1,0 +1,12 @@
+# Exclude the gcloud_build_image script itself, as it's not needed inside the build
+gcloud_build_image
+
+# Exclude common dependency folders
+node_modules/
+venv/
+.git/
+
+# Exclude any other large files or build artifacts
+*.log
+*.tmp
+local_build_output/

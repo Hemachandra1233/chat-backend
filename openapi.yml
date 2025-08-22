@@ -1,0 +1,53 @@
+swagger: '2.0'
+info:
+  title: Cloud Endpoints + Cloud Run
+  description: Sample API on Cloud Endpoints with a Cloud Run backend
+  version: 1.0.0
+host: dev-sbc-genai-717571889717.us-central1.run.app
+schemes:
+  - https
+produces:
+  - application/json
+x-google-backend:
+  address: https://chat-backend-717571889717.europe-west1.run.app
+  protocol: h2
+
+# This section configures JWT validation using your specific Microsoft Entra ID tenant.
+securityDefinitions:
+  azure_ad_token:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    # Issuer URI using your specific tenant ID for maximum security.
+    x-google-issuer: "https://login.microsoftonline.com/0b950cb2-47e3-4a58-82cd-1ec469eccfb4/v2.0"
+    
+    # JWKS URI for your specific tenant to fetch the correct public keys.
+    x-google-jwks_uri: "https://login.microsoftonline.com/0b950cb2-47e3-4a58-82cd-1ec469eccfb4/discovery/v2.0/keys"
+    
+    # The audience MUST be your API's Application (client) ID.
+    # **You must replace the placeholder below with the actual ID from Azure.**
+    x-google-audiences: "623a4d00-8877-48e1-8aaa-deadef48e57d"
+
+# Applies JWT validation to all paths in your API.
+security:
+  - azure_ad_token: []
+
+paths:
+  /hello1:
+    get:
+      summary: Greet a user
+      operationId: hello1
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: string
+  /hello2:
+    get:
+      summary: Greet a user
+      operationId: hello2
+      responses:
+        '200':
+          description: A successful response for hello2
+          schema:
+            type: string
