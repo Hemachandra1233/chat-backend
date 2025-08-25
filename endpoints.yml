@@ -41,7 +41,6 @@ steps:
     - '-c'
     - |
       CONFIG_ID=$$(gcloud endpoints configs list --service=${_SERVICE_NAME} --project=${_PROJECT_ID} --format='value(CONFIG_ID)' | sort -r | head -n 1)
-      ESP_VERSION=$$(gcloud container images list-tags gcr.io/espv2-runtime-serverless --filter="tags:^2" --format="get(tags)" | sort -r | head -n 1)
       
       # Construct the image URL pointing to your Artifact Registry
       IMAGE_URL="${_ARTIFACT_REGISTRY_REPO}/espv2-runtime-serverless:$${ESP_VERSION}-${_SERVICE_NAME}-$${CONFIG_ID}"

@@ -117,7 +117,7 @@ USER envoy
 ENTRYPOINT ["/env_start_proxy.py"]
 EOF
 
-NEW_IMAGE="${IMAGE_REPOSITORY}/espv2-runtime-serverless:${ESP_FULL_VERSION}-${SERVICE}-${CONFIG_ID}"
+NEW_IMAGE="${IMAGE_REPOSITORY}/espv2-runtime-serverless:${SERVICE}-${CONFIG_ID}"
 gcloud builds submit --tag "${NEW_IMAGE}" . --project="${PROJECT}"
 )
 
