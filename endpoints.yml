@@ -52,7 +52,6 @@ steps:
         --platform=managed \
         --project=${_PROJECT_ID} \
         --region=${_REGION}
-        --set-env-vars=ESPv2_ARGS=--cors_preset=basic
   id: 'deploy-espv2-to-cloud-run'
 
 options:
